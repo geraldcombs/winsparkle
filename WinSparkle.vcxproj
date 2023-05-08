@@ -346,9 +346,6 @@
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
     </ProjectReference>
-    <ProjectReference Include="3rdparty\libcrypto.vcxproj">
-      <Project>{a0326e8b-57a0-548e-ab4a-2db2b6704d70}</Project>
-    </ProjectReference>
     <ProjectReference Include="3rdparty\wx.vcxproj">
       <Project>{499a5238-5aac-5fd3-8902-819d787108a5}</Project>
       <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>

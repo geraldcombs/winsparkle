@@ -29,10 +29,14 @@
 #include "settings.h"
 #include "utils.h"
 
+#ifdef HAVE_OPENSSL
 #include <openssl/dsa.h>
 #include <openssl/err.h>
 #include <openssl/pem.h>
 #include <openssl/sha.h>
+#else
+#define SHA_DIGEST_LENGTH 20
+#endif
 
 #include <stdexcept>
 
@@ -155,6 +159,7 @@ public:
     Light-weight dynamic loader of OpenSSL library.
     Loads only minimum required symbols, just enough to verify DSA SHA1 signature of the file.
  */
+#ifdef HAVE_OPENSSL
 class TinySSL
 {
     TinySSL() {}
@@ -261,6 +266,7 @@ public:
     }; // DSAWrap
 
 }; // TinySSL
+#endif
 
 std::string Base64ToBin(const std::string &base64)
 {
@@ -289,8 +295,12 @@ std::string Base64ToBin(const std::string &base64)
 void SignatureVerifier::VerifyDSAPubKeyPem(const std::string &pem)
 {
     // DSAPub::DSAPub() throw if not valid
+#ifdef HAVE_OPENSSL
     TinySSL::DSAPub dsa_pub(pem);
     (void)dsa_pub;
+#else
+    (void) pem;
+#endif
 }
 
 void SignatureVerifier::VerifyDSASHA1SignatureValid(const std::wstring &filename, const std::string &signature_base64)
@@ -299,7 +309,9 @@ void SignatureVerifier::VerifyDSASHA1SignatureValid(const std::wstring &filename
     {
         if (signature_base64.size() == 0)
             throw BadSignatureException("Missing DSA signature!");
+#ifdef HAVE_OPENSSL
         TinySSL::inst().VerifyDSASHA1Signature(filename, Base64ToBin(signature_base64));
+#endif
     }
     catch (BadSignatureException&)
     {
